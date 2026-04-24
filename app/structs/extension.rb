@@ -1,12 +1,35 @@
 # frozen_string_literal: true
 
 require "dry/core"
+require "refinements/time"
 
 module Terminus
   module Structs
     # The extension struct.
     class Extension < DB::Struct
       WEEK = %w[sunday monday tuesday wednesday thursday friday saturday].freeze
+
+      using Refinements::Time
+
+      def export_attributes
+        {
+          name:,
+          label:,
+          description:,
+          mode:,
+          kind:,
+          tags:,
+          static_body:,
+          fields:,
+          template:,
+          data:,
+          interval:,
+          unit:,
+          days:,
+          last_day_of_month:,
+          start_at: start_at.rfc_3339
+        }
+      end
 
       def liquid_attributes
         all_fields = Array fields
