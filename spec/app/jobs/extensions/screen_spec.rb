@@ -12,7 +12,7 @@ RSpec.describe Terminus::Jobs::Extensions::Screen, :db do
         name: "test",
         label: "Test",
         kind: "static",
-        body: {"name" => "Test"},
+        static_body: {"name" => "Test"},
         template: "<p>{{name}}</p>"
       ]
     end

@@ -105,7 +105,7 @@
         </p>
 
         <p class="help" x-show="kind === 'static'">
-          Render local data. Use the body field, below, to supply JSON data.
+          Render local data. Use the static body field, below, to supply JSON data.
         </p>
       </div>
 
@@ -127,19 +127,19 @@
 
       <%= scope(
             :form_field,
-            key: :body,
+            key: :static_body,
             errors:,
             alpine: {show: "kind === 'static'"}
           ).render do %>
 
-        <label class="key" for="extension_body">
+        <label class="key" for="extension_static_body">
           Static Body
           <%= render "shared/popovers/triggers/default", name: :static_body %>
         </label>
 
-        <%= form.text_area :body,
-                           field_for(:formatted_body, fields, extension),
-                           id: :extension_body,
+        <%= form.text_area :static_body,
+                           field_for(:formatted_static_body, fields, extension),
+                           id: :extension_static_body,
                            class: "bit-editor",
                            autocomplete: :off,
                            data: {language: :json} %>

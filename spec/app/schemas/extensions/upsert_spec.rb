@@ -13,7 +13,7 @@ RSpec.describe Terminus::Schemas::Extensions::Upsert do
         description: "A test.",
         kind: "pull",
         tags: "one two three",
-        body: %({"test": "example"}),
+        static_body: %({"test": "example"}),
         template: "A full test.",
         fields: %([{"name": "one", "label": "One"}, {"name": "two", "label": "Two"}]),
         data: %({"label": "Test"}),
@@ -34,7 +34,7 @@ RSpec.describe Terminus::Schemas::Extensions::Upsert do
     end
 
     it "answers body hash" do
-      expect(contract.call(attributes).to_h).to include(body: {"test" => "example"})
+      expect(contract.call(attributes).to_h).to include(static_body: {"test" => "example"})
     end
 
     it "answers fields array" do

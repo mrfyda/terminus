@@ -10,7 +10,7 @@ RSpec.describe Terminus::Aspects::Extensions::Renderers::Static do
       Factory.structs[
         :extension,
         kind: "static",
-        body: {
+        static_body: {
           "days" => [
             {"label" => "One", "at" => "2025-10-31"},
             {"label" => "Two", "at" => "2026-01-01"}

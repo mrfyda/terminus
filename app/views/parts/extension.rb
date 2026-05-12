@@ -17,8 +17,6 @@ module Terminus
                      .then { "[#{it}]" }
         end
 
-        def formatted_body = json_formatter.call body
-
         def formatted_data = json_formatter.call data
 
         def formatted_days = days ? days.join(",") : ""
@@ -28,6 +26,8 @@ module Terminus
         def formatted_start_at
           start_at ? start_at.strftime("%Y-%m-%dT%H:%M:%S") : "2025-01-01T00:00:00"
         end
+
+        def formatted_static_body = json_formatter.call static_body
       end
     end
   end

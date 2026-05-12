@@ -41,7 +41,7 @@ module Terminus
                 static_data = attributes.delete :static_data
 
                 if kind == "static"
-                  attributes.merge! kind:, body: static_data
+                  attributes.merge! kind:, static_body: static_data
                 else
                   attributes.merge! kind:, poll_body: attributes[:poll_body]
                 end

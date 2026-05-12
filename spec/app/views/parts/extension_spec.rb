@@ -25,19 +25,6 @@ RSpec.describe Terminus::Views::Parts::Extension do
     end
   end
 
-  describe "#formatted_body" do
-    it "answers hash" do
-      allow(extension).to receive(:body).and_return(sort: :name, limit: 5)
-
-      expect(part.formatted_body).to eq(<<~JSON.strip)
-        {
-          "sort": "name",
-          "limit": 5
-        }
-      JSON
-    end
-  end
-
   describe "#formatted_data" do
     it "answers hash" do
       allow(extension).to receive(:data).and_return(label: "Test", description: "A test.")
@@ -100,6 +87,19 @@ RSpec.describe Terminus::Views::Parts::Extension do
     it "answers default date and time when missing" do
       allow(extension).to receive(:start_at).and_return(nil)
       expect(part.formatted_start_at).to eq("2025-01-01T00:00:00")
+    end
+  end
+
+  describe "#formatted_static_body" do
+    it "answers hash" do
+      allow(extension).to receive(:static_body).and_return(sort: :name, limit: 5)
+
+      expect(part.formatted_static_body).to eq(<<~JSON.strip)
+        {
+          "sort": "name",
+          "limit": 5
+        }
+      JSON
     end
   end
 end

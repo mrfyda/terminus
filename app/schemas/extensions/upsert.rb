@@ -14,7 +14,7 @@ module Terminus
         optional(:mode).filled :string
         required(:kind).filled :string
         required(:tags).maybe :array
-        required(:body).maybe :hash
+        required(:static_body).maybe :hash
         required(:template).maybe :string
         required(:fields).maybe :array
         required(:data).maybe :hash
@@ -27,7 +27,7 @@ module Terminus
         after(:value_coercer, &Coercers::LinesToArray.curry[:tags])
         after(:value_coercer, &Coercers::DefaultToFalse.curry[:last_day_of_month])
         after(:value_coercer, &Coercers::DefaultToArray.curry[:days])
-        after(:value_coercer, &Coercers::JSONToHash.curry[:body])
+        after(:value_coercer, &Coercers::JSONToHash.curry[:static_body])
         after(:value_coercer, &Coercers::JSONToHash.curry[:fields])
         after(:value_coercer, &Coercers::JSONToHash.curry[:data])
       end

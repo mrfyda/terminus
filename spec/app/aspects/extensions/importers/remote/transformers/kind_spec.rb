@@ -23,7 +23,7 @@ RSpec.describe Terminus::Aspects::Extensions::Importers::Remote::Transformers::K
 
       expect(transformer.call(attributes)).to be_success(
         kind: "static",
-        body: %({"email": "test@test.io"}),
+        static_body: %({"email": "test@test.io"}),
         poll_body: %({"sort":"name"})
       )
     end

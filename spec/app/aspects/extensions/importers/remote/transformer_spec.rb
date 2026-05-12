@@ -84,7 +84,7 @@ RSpec.describe Terminus::Aspects::Extensions::Importers::Remote::Transformer do
 
     it "imports static plugin" do
       attributes[:strategy] = "static"
-      proof.merge! kind: "static", body: {"handle" => "test", "email" => "test@test.io"}
+      proof.merge! kind: "static", static_body: {"handle" => "test", "email" => "test@test.io"}
 
       allow(extractor).to receive(:call).and_return Success(archive)
       expect(transformer.call(1)).to be_success(proof)

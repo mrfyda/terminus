@@ -15,7 +15,7 @@ RSpec.describe Terminus::Contracts::Extensions::Create do
           mode: "text",
           kind: "static",
           tags: ["test"],
-          body: "{}",
+          static_body: "{}",
           fields: "[]",
           template: nil,
           data: "{}",

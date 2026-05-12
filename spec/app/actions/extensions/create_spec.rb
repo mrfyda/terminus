@@ -15,7 +15,7 @@ RSpec.describe Terminus::Actions::Extensions::Create, :db do
           description: nil,
           kind: "poll",
           tags: nil,
-          body: nil,
+          static_body: nil,
           fields: nil,
           template: nil,
           data: nil,
