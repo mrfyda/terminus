@@ -4,26 +4,31 @@
 
 :chrome_link: link:https://www.google.com/chrome[Google Chrome]
 :core_api_link: link:https://trmnl.com/api-docs/index.html[Core API]
-:devices_link: link:doc/devices.adoc[Devices]
-:docker_doc_link: link:doc/docker.adoc[Docker]
+:devices_link: link:https://github.com/usetrmnl/terminus/blob/main/doc/devices.adoc[Devices]
+:doc_api_link: link:https://github.com/usetrmnl/terminus/blob/main/doc/api.adoc[API]
+:doc_configuration_link: link:https://github.com/usetrmnl/terminus/blob/main/doc/configuration.adoc[Configuration]
+:doc_development_link: link:https://github.com/usetrmnl/terminus/blob/main/doc/development.adoc[Development]
+:doc_docker_link: link:https://github.com/usetrmnl/terminus/blob/main/doc/docker.adoc[Docker]
+:doc_extensions_link: link:https://github.com/usetrmnl/terminus/blob/main/doc/extensions.adoc[Extensions]
+:doc_jobs_link: link:https://github.com/usetrmnl/terminus/blob/main/doc/jobs.adoc[Jobs]
+:doc_kubernetes_link: link:https://github.com/usetrmnl/terminus/blob/main/doc/kubernetes.adoc[Kubernetes]
+:doc_raspberry_pi_link: link:https://github.com/usetrmnl/terminus/blob/main/doc/raspberry_pi.adoc[Raspberry PI]
+:doc_render_link: link:[link:https://github.com/usetrmnl/terminus/blob/main/doc/render.adoc[Render]]
 :docker_link: link:https://www.docker.com[Docker]
 :dragonfly_link: link:https://www.dragonflydb.io[Dragonfly]
 :esbuild_link: link:https://esbuild.github.io[esbuild]
-:extensions_link: link:doc/extensions.adoc[Extensions]
 :firmware_link: link:https://github.com/usetrmnl/trmnl-firmware[Firmware]
 :git_link: link:https://git-scm.com[Git]
 :hadolint_link: link:https://github.com/hadolint/hadolint[Haskell Dockerfile Linter]
-:hanami_link: link:https://hanamirb.org[Hanami]
+:hanami_link: link:https://hanakai.org/hanami[Hanami]
 :htmx_link: link:https://htmx.org[htmx]
 :imagemagick_link: link:https://imagemagick.org[ImageMagick]
-:jobs_link: link:doc/jobs.adoc[Jobs]
 :milestoner_link: link:https://alchemists.io/projects/milestoner[Milestoner]
 :node_link: link:https://nodejs.org[Node]
 :overmind_link: link:https://github.com/DarthSim/overmind[Overmind]
 :postgres_link: link:https://www.postgresql.org[PostgreSQL]
 :puma_link: link:https://puma.io[Puma]
 :rack_attack_link: link:https://github.com/rack/rack-attack[Rack Attack]
-:raspberry_pi_link: link:doc/raspberry_pi.adoc[Raspberry PI]
 :redis_link: link:https://redis.io[Redis]
 :render_link: link:https://render.com[Render]
 :rodauth_link: link:https://rodauth.jeremyevans.net[Rodauth]
@@ -37,11 +42,6 @@
 :youtube_link: link:https://www.youtube.com/@useTRMNL[YouTube]
 
 = Terminus
-
-image:https://dl.circleci.com/status-badge/img/gh/usetrmnl/terminus/tree/main.svg?style=svg[CircleCI, link=https://dl.circleci.com/status-badge/redirect/gh/usetrmnl/terminus/tree/main]
-image:https://github.com/usetrmnl/terminus/actions/workflows/docker.yml/badge.svg[Docker, link="https://github.com/usetrmnl/terminus/actions"]
-image:https://alchemists.io/images/projects/caliber/coverage.svg[Code Coverage, link=https://dl.circleci.com/status-badge/redirect/gh/usetrmnl/terminus/tree/main, width=139.1, height=20]
-image:https://alchemists.io/images/badges/style.svg[Style, link=https://alchemists.io/projects/caliber, width=81, height=20]
 
 Terminus is a {ruby_link}/{hanami_link} web server that allows you to manage {trmnl_link} devices running on your own local network or hosted cloud. This is our flagship BYOS implementation that aims to be compatible with our {trmnl_link} Core server but _also different_ since this open source solution provides features not possible in our Core application.
 
@@ -124,7 +124,7 @@ curl https://raw.githubusercontent.com/usetrmnl/terminus/refs/heads/main/scripts
 
 Once launched, open `http://localhost:2300` in your browser then click the _Register_ link to register and log into the system.
 
-⚠️ This script is not idempotent which means you can't run it more than once since your database credentials will be different each time. This is only meant for getting up and running quickly to explore the feature set, not permanent use. For permanent use, see the link:doc/docker.adoc[Docker] documentation.
+⚠️ This script is not idempotent which means you can't run it more than once since your database credentials will be different each time. This is only meant for getting up and running quickly to explore the feature set, not permanent use. For permanent use, see the link:https://github.com/usetrmnl/terminus/blob/main/doc/docker.adoc[Docker] documentation.
 
 == Setup
 
@@ -173,7 +173,7 @@ From your browser, you can then click on the _Register_ link to register and log
 
 === Configuration
 
-See link:doc/configuration.adoc[Configuration] documentation for details.
+See {doc_configuration_link} documentation for details.
 
 === Users
 
@@ -198,35 +198,35 @@ In accordance with the {unbrickable_pledge_link}, the latest version of Terminus
 
 === Extensions
 
-See {extensions_link} documentation for details.
+See {doc_extensions_link} documentation for details.
 
 === Jobs
 
-See {jobs_link} documentation for details on {sidekiq_link} worker jobs.
+See {doc_jobs_link} documentation for details on {sidekiq_link} worker jobs.
 
 === API
 
-See link:doc/api.adoc[API] documentation for details.
+See {doc_api_link} documentation for details.
 
 === Docker
 
-See link:doc/docker.adoc[Docker] documentation for details.
+See {doc_docker_link} documentation for details.
 
 === Raspberry Pi
 
-See {raspberry_pi_link} documentation for details.
+See {doc_raspberry_pi_link} documentation for details.
 
 === Kubernetes
 
-See link:doc/kubernetes.adoc[Kubernetes] documentation for details.
+See {doc_kubernetes_link} documentation for details.
 
 === Render
 
-See link:doc/render.adoc[Render] documentation for details.
+See {doc_render_link} documentation for details.
 
 == Development
 
-See link:doc/development.adoc[Development] documentation for details.
+See {doc_development_link} documentation for details.
 
 == Tests
 
@@ -237,46 +237,21 @@ To test, run:
 bin/rake
 ----
 
-== Code Quality
-
-Code quality is an important and vital aspect of the work on this project. The following gems are used to ensure our work remains consistent and of high quality:
-
-* link:https://alchemists.io/projects/git-lint[Git Lint]: Ensures Git commit messages are well written and consistent for code review but also for automatic release note generation via {milestoner_link}.
-* link:https://alchemists.io/projects/caliber[Caliber]: Ensures code is consistent in terms of style, layout, performance, best practices, etc.
-* link:https://github.com/troessner/reek[Reek]: Augments Caliber by detecting code smells and antipatterns.
-* link:https://rspec.info[RSpec]: Provides a specification and testing framework for unit and integration tests.
-* link:https://github.com/simplecov-ruby/simplecov[SimpleCov]: Generates interactive reports with every CI build. Will fail the build if quality drops below 95%. ⚠️ The badge at the top of this document isn't updated in real-time, unfortunately, but is fairly accurate.
-
-To view up-to-date code coverage details, follow these steps:
-
-* Visit the link:https://app.circleci.com/pipelines/github/usetrmnl/terminus?branch=main[Circle CI] build page.
-* Click on the latest "Success" build at the top of the page.
-* Click on `build`.
-* Click on ARTIFACTS.
-* Click on the `coverage/index.html` file.
-
-At this point you can click through the tabs at the top of the page to inspect the various namespaces that make up this application.
-
-== Versions
-
-To view all versions and the complete release history to this project -- including detailed notes of all changes -- run the following:
-
-[source,bash]
-----
-cd terminus
-gem install milestoner
-milestoner build --max 1000 --format web
-ruby -run -e httpd tmp/milestones --port 3030
-open http://127.0.0.1:3030
-----
-
-We are working on automating this across multiple projects, not only Terminus, because {milestoner_link} also generates a complete syndicated feed of release notes as well. This means, in the future, you'll be able to subscribe to all updates via your feed reader. 🎉
-
-💡 You can also subscribe to our {youtube_link} channel and get occasional version release video updates too.
-
 == License
 
 While this project is distributed under the permissive link:/LICENSE.adoc[MIT License], we strongly believe that technology should serve humanity's best interests. We created this software with the intent that it be used to benefit people and communities, not to cause harm. We encourage individuals and organizations to consider the ethical implications and to use this project in ways that respect human rights, promote equity, and contribute positively to society. Though we cannot legally restrict usage under the MIT License, we ask that you join us in fostering a responsible technology ecosystem by avoiding applications that could cause harm, perpetuate discrimination, or undermine human dignity. Technology is best used to enrich lives, let's ensure we build a better world together!
+
+== link:https://alchemists.io/policies/security[Security]
+
+== link:https://alchemists.io/policies/code_of_conduct[Code of Conduct]
+
+== link:https://alchemists.io/policies/contributions[Contributions]
+
+== link:https://alchemists.io/policies/developer_certificate_of_origin[Developer Certificate of Origin]
+
+== link:https://alchemists.io/projects/terminus/versions[Versions]
+
+== link:https://alchemists.io/community[Community]
 
 == Credits
 
