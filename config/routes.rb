@@ -84,6 +84,8 @@ module Terminus
     get "/extensions/gallery", to: "extensions.gallery.index", as: :extensions_gallery
     post "/extensions/gallery", to: "extensions.gallery.create", as: :extensions_gallery_create
 
+    post "/extensions/import", to: "extensions.import.create", as: :extension_import
+
     post "/extensions/:extension_id/build",
          to: "extensions.build.create",
          as: :extension_build_create
