@@ -11,7 +11,7 @@ module Terminus
           module Creators
             # Creates extension.
             class Extension
-              include Deps[:logger, repository: "repositories.extension"]
+              include Deps[:logger, "aspects.jobs.schedule", repository: "repositories.extension"]
               include Initable[error_joiner: proc { Terminus::Aspects::Errors::ResultJoiner }]
               include Dry::Monads[:result]
 
@@ -34,7 +34,12 @@ module Terminus
 
               attr_reader :schema, :problem
 
-              def create(attributes) = repository.create(attributes).tap { log it }
+              def create attributes
+                repository.create(attributes).tap do |extension|
+                  log extension
+                  schedule.upsert(*extension.to_schedule)
+                end
+              end
 
               def log extension
                 logger.debug(tags: [{extension_id: extension.id}]) { "Imported extension." }

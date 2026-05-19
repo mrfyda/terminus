@@ -68,6 +68,11 @@ RSpec.describe Terminus::Aspects::Extensions::Importers::Local::Creators::Extens
       expect(logger.reread).to match(/DEBUG.+Imported extension\..+extension_id.+\d+/)
     end
 
+    it "adds job schedule" do
+      creator.call attributes
+      expect(Hanami.app[:sidekiq].get_schedule["extension-test"]).to be_a(Hash)
+    end
+
     it "answers extension when success" do
       expect(creator.call(attributes)).to match(Success(kind_of(Terminus::Structs::Extension)))
     end
