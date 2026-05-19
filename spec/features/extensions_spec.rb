@@ -3,6 +3,8 @@
 require "hanami_helper"
 
 RSpec.describe "Extensions", :db do
+  using Refinements::Pathname
+
   let(:model) { Factory[:model, name: "og_plus"] }
   let(:extension) { Factory[:extension] }
 
@@ -76,6 +78,24 @@ RSpec.describe "Extensions", :db do
     click_button "Save"
 
     expect(page).to have_text("Clone Test")
+  end
+
+  it "imports", :aggregate_failures, :js do
+    exporter = Terminus::Aspects::Extensions::Exporter.new
+    importer = Terminus::Aspects::Extensions::Importers::Local::Creator.new
+    extension = Factory.structs[:extension, label: "Extension Import Test"]
+    path = exporter.call(extension).bind { |io| temp_dir.join("test.zip").write io.read }
+
+    path.open { importer.call it }
+
+    visit routes.path(:extensions)
+    click_button "Upload"
+
+    within ".bit-popover-content", text: "Extension Import" do
+      attach_file "extension_attachment", path
+    end
+
+    expect(page).to have_text("Extension Import Test")
   end
 
   it "exports" do
