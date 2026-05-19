@@ -7,15 +7,12 @@ RSpec.describe Terminus::Actions::Extensions::Import::Create, :db do
 
   subject(:action) { described_class.new }
 
-  include_context "with application dependencies"
-
   describe "#call" do
     let(:exporter) { Terminus::Aspects::Extensions::Exporter.new }
     let(:extension) { Factory.structs[:extension] }
 
     it "renders errors when invalid" do
       allow(extension).to receive(:export_attributes).and_return({})
-      path = exporter.call(extension).bind { |io| temp_dir.join("test.zip").write io.read }
 
       response = action.call Rack::MockRequest.env_for(
         "",
@@ -26,7 +23,7 @@ RSpec.describe Terminus::Actions::Extensions::Import::Create, :db do
               type: "application/zip",
               head: "test",
               filename: "test.zip",
-              tempfile: path.open
+              tempfile: exporter.call(extension).value!
             }
           }
         }
@@ -36,8 +33,6 @@ RSpec.describe Terminus::Actions::Extensions::Import::Create, :db do
     end
 
     it "flashs success when valid" do
-      path = exporter.call(extension).bind { |io| temp_dir.join("test.zip").write io.read }
-
       response = action.call Rack::MockRequest.env_for(
         "",
         "router.params" => {
@@ -47,7 +42,7 @@ RSpec.describe Terminus::Actions::Extensions::Import::Create, :db do
               type: "application/zip",
               head: "test",
               filename: "test.zip",
-              tempfile: path.open
+              tempfile: exporter.call(extension).value!
             }
           }
         }
