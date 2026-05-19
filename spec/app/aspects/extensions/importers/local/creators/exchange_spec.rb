@@ -40,6 +40,16 @@ RSpec.describe Terminus::Aspects::Extensions::Importers::Local::Creators::Exchan
       )
     end
 
+    it "enqueues job" do
+      Sidekiq::Testing.fake! do
+        creator.call attributes
+
+        expect(Terminus::Jobs::Extensions::ExchangeRefresh.jobs).to contain_exactly(
+          hash_including("args" => [kind_of(Integer)])
+        )
+      end
+    end
+
     it "answers extension when success" do
       expect(creator.call(attributes)).to match(
         Success(kind_of(Terminus::Structs::ExtensionExchange))

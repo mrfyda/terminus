@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "initable"
+
 module Terminus
   module Aspects
     module Extensions
@@ -9,6 +11,7 @@ module Terminus
             # Creates exchange.
             class Exchange
               include Deps[:logger, repository: "repositories.extension_exchange"]
+              include Initable[job: Terminus::Jobs::Extensions::ExchangeRefresh]
 
               def initialize(schema: Schemas::Exchange, error_joiner: Errors::ResultJoiner, **)
                 @schema = schema
@@ -27,7 +30,12 @@ module Terminus
 
               attr_reader :schema, :error_joiner
 
-              def create(attributes) = repository.create(attributes).tap { log it, attributes }
+              def create attributes
+                repository.create(attributes).tap do |exchange|
+                  log exchange, attributes
+                  job.perform_async exchange.id
+                end
+              end
 
               def log exchange, attributes
                 tags = [{extension_id: attributes[:extension_id], exchange_id: exchange.id}]
