@@ -5,7 +5,7 @@ ruby file: ".ruby-version"
 source "https://rubygems.org"
 
 gem "bcrypt", "~> 3.1"
-gem "cogger", "~> 2.0"
+gem "cogger", "~> 2.3"
 gem "connection_pool", "~> 3.0"
 gem "core", "~> 3.2"
 gem "csv", "~> 3.3"
@@ -49,7 +49,7 @@ gem "sidekiq", "~> 8.0"
 gem "sidekiq-scheduler", "~> 6.0"
 gem "trmnl-api", "~> 0.16"
 gem "trmnl-liquid", "~> 0.6"
-gem "versionaire", "~> 15.0"
+gem "versionaire", "~> 15.3"
 gem "wholeable", "~> 2.1"
 
 group :quality do
