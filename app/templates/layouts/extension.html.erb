@@ -21,6 +21,10 @@
         flex-direction: column;
         justify-content: center;
       }
+
+      .screen {
+        <%= content_for :screen_variables %>
+      }
     </style>
 
     <%= javascript_tag "https://trmnl.com/js/latest/plugins.js" %>
