@@ -3,6 +3,7 @@
 :figure-caption!:
 
 :http_link: link:https://github.com/httprb/http[HTTP]
+:puma_link: link:https://puma.io[Puma]
 
 = Configuration
 
@@ -26,6 +27,9 @@ There are several environment variables you can use to customize behavior by upd
 * `DATABASE_USER`: Defines your database user. Used by {docker_doc_link} only. Default: `terminus`.
 * `FIRMWARE_SYNCHRONIZER`: Enables/disables firmware synchronization. See {jobs_link} for details. Defaults to enabled.
 * `FONTS_PATH`: The path to where {trmnl_framework_link} fonts are stored since the Framework stylesheets require a relative path to all fonts to load properly. This is necessary when rendering screens for {extensions_link}. Default: `public/fonts`.
+* `HANAMI_MAX_THREADS`: The maximum number of threads allowed for {puma_link}. Default: `5`.
+* `HANAMI_MIN_THREADS`: The minimum number of threads allowed for {puma_link}. Default: `HANAMI_MAX_THREADS`.
+* `HANAMI_WEB_CONCURRENCY`: The number of {puma_link} workers. Default: `0`.
 * `HANAMI_PORT`: The default port when running the app locally or via {docker_doc_link}. When using Docker, this is used for the internal and external port mapping.
 * `HTTP_TIMEOUT_CONNECT`: The time, in seconds, before HTTP times out when establishing a connection. Default: `2`.
 * `HTTP_TIMEOUT_READ`: The time, in seconds, before HTTP times out when reading from a connection. Default: `10`.
