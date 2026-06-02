@@ -92,6 +92,30 @@
         <dd class="value"><%= boolean device.firmware_update %></dd>
 
         <dt class="key">
+          Firmware Profile
+          <%= render "shared/popovers/triggers/default", name: :firmware_profile %>
+        </dt>
+        <dd class="value"><%= boolean device.firmware_profile %></dd>
+
+        <dt class="key">
+          Display Compatibility
+          <%= render "shared/popovers/triggers/default", name: :display_compatibility %>
+        </dt>
+        <dd class="value"><%= boolean device.display_compatibility %></dd>
+
+        <dt class="key">
+          Display Profile
+          <%= render "shared/popovers/triggers/default", name: :display_profile %>
+        </dt>
+        <dd class="value"><%= device.formatted_display_profile %></dd>
+
+        <dt class="key">
+          Touch Bar
+          <%= render "shared/popovers/triggers/default", name: :touch_bar %>
+        </dt>
+        <dd class="value"><%= device.formatted_touch_bar %></dd>
+
+        <dt class="key">
           Wake Reason
           <%= render "shared/popovers/triggers/default", name: :wake_reason %>
         </dt>
@@ -132,3 +156,4 @@
 </section>
 
 <%= render "devices/shared/popovers/all" %>
+
