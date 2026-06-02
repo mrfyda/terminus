@@ -13,21 +13,28 @@ module Terminus
         label
         mac_address
         api_key
+        firmware_profile
+        firmware_update
         firmware_version
         wifi
         battery_charge
         battery_voltage
+        charging
         refresh_rate
+        image_cached
         image_timeout
         wake_reason
+        wake_duration
         width
         height
-        firmware_update
+        display_compatibility
+        display_profile
+        touch_bar
         sleep_start_at
         sleep_stop_at
+        synced_at
         created_at
         updated_at
-        synced_at
       ].freeze
 
       def initialize record, keys: KEYS, transformer: Transformers::Time

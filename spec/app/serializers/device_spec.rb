@@ -20,21 +20,28 @@ RSpec.describe Terminus::Serializers::Device do
       label: "Serialize Test",
       mac_address: "A1:B2:C3:D4:E5:F6",
       api_key: "abc123",
+      firmware_profile: true,
+      firmware_update: true,
       firmware_version: "1.2.3",
       wake_reason: nil,
+      wake_duration: 125,
       wifi: -40,
       battery_charge: 0.0,
       battery_voltage: 3.0,
+      charging: false,
       refresh_rate: 500,
+      image_cached: false,
       image_timeout: 5,
+      display_compatibility: false,
+      display_profile: "default",
+      touch_bar: "tap",
       width: 800,
       height: 480,
-      firmware_update: true,
       sleep_start_at: "05:00:00",
       sleep_stop_at: "10:00:00",
+      synced_at: "2025-01-01T10:10:10+0000",
       created_at: "2025-01-01T10:10:10+0000",
-      updated_at: "2025-01-01T10:10:10+0000",
-      synced_at: "2025-01-01T10:10:10+0000"
+      updated_at: "2025-01-01T10:10:10+0000"
     }
   end
 

@@ -14,6 +14,11 @@ Metrics/BlockLength:
     - config/db/migrate/*
     - slices/authentication/feature.rb
     - slices/authentication/middleware.rb
+Metrics/CollectionLiteralLength:
+  Exclude:
+    - app/serializers/device.rb
+    - spec/app/serializers/device_spec.rb
+    - spec/requests/devices_spec.rb
 Metrics/CyclomaticComplexity:
   AllowedMethods:
     - battery_voltage_to_percent
