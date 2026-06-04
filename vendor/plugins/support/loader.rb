@@ -3,6 +3,7 @@
 require_relative "base"
 require_relative "erb_view"
 require_relative "ics_helpers"
+require_relative "registry"
 require_relative "weather_plugin"
 
 # Entry point for rendering vendored TRMNL native plugins.

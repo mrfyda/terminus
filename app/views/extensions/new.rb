@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "core"
+require_relative "../../../vendor/plugins/support/loader"
 
 module Terminus
   module Views
@@ -14,6 +15,8 @@ module Terminus
 
         expose(:models) { model_repository.all.map { [it.label, it.id] } }
         expose(:devices) { device_repository.all.map { [it.label, it.id] } }
+        expose(:native_catalog) { ::Plugins.catalog }
+        expose(:native_layouts) { ::Plugins.layouts }
         expose :extension
         expose :fields, default: Core::EMPTY_HASH
         expose :errors, default: Core::EMPTY_HASH

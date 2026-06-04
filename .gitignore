@@ -12,3 +12,6 @@ public/*
 !public/404.html
 !public/500.html
 tmp
+
+# Rotated logs
+log/

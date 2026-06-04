@@ -16,6 +16,8 @@ module Terminus
         expose(:default_model) { model_repository.find_by name: "og_plus" }
         expose(:models) { model_repository.all.map { [it.label, it.id] } }
         expose(:devices) { device_repository.all.map { [it.label, it.id] } }
+        expose(:native_catalog) { ::Plugins.catalog }
+        expose(:native_layouts) { ::Plugins.layouts }
         expose(:exchanges) { |extension:| exchange_repository.where extension_id: extension.id }
         expose :extension
         expose :fields, default: Core::EMPTY_HASH
