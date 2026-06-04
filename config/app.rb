@@ -6,6 +6,7 @@ require "petail"
 require_relative "initializers/rack_attack"
 require_relative "initializers/rack_logger_patch"
 require_relative "initializers/sql_logger_patch"
+require_relative "initializers/native_plugins"
 
 module Terminus
   # The application base configuration.
