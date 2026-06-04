@@ -11,6 +11,7 @@ module Terminus
         include Deps[
           "aspects.extensions.contextualizer",
           "aspects.extensions.renderers.image",
+          "aspects.extensions.renderers.native",
           "aspects.extensions.renderers.poll",
           "aspects.extensions.renderers.static"
         ]
@@ -29,6 +30,7 @@ module Terminus
 
           case kind
             when "image" then image.call extension, context:
+            when "native" then native.call extension, context:
             when "poll" then poll.call extension, context:
             when "static" then static.call extension, context:
             else Failure "Unsupported extension kind: #{kind}."

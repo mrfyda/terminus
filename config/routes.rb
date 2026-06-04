@@ -81,6 +81,14 @@ module Terminus
     put "/extensions/:id", to: "extensions.update", as: :extension_update
     delete "/extensions/:id", to: "extensions.delete", as: :extension_delete
 
+    get "/extensions/:extension_id/oauth", to: "extensions.oauth.new", as: :extension_oauth
+
+    # Fixed callback path: vendored native plugins build their provider
+    # redirect URI as "<base_url>/plugin_settings/<plugin>/redirect".
+    get "/plugin_settings/:plugin/redirect",
+        to: "plugin_settings.redirect",
+        as: :plugin_settings_redirect
+
     get "/extensions/gallery", to: "extensions.gallery.index", as: :extensions_gallery
     post "/extensions/gallery", to: "extensions.gallery.create", as: :extensions_gallery_create
 

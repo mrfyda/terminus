@@ -1,0 +1,53 @@
+= OAuth Flow Design (Tier 2)
+
+Unlocks google_calendar, google_analytics, youtube_analytics, withings.
+The OAuth *client* logic ships in the plugins (Signet); what's missing is
+the web plumbing Core provides. Implementation waits until the
+pasted-token work lands (Gemfile is in flight there).
+
+== Constraints discovered in the vendored code
+
+. Plugins build their redirect URI themselves, with a *fixed path*:
+  `"#{Rails.application.credentials.base_url}/plugin_settings/<name>/redirect"`.
+  Terminus must therefore serve that exact path, and `credentials.base_url`
+  must return the Terminus public URL — while asset URLs stay pinned to
+  usetrmnl.com. Two ENV vars: `PLUGINS_BASE_URI` (OAuth host, defaults to
+  API_URI) and the existing `PLUGINS_ASSET_URI`.
+. Class methods provide the flow pieces: `Plugins::<X>.redirect_url`
+  (authorization URI) and `.fetch_access_token(code)` (token exchange).
+. Tokens live in `plugin_settings.encrypted_settings[<keyname>]` and are
+  *written back* on refresh via `plugin_settings.update(encrypted_settings:)`.
+  Our Setting shim currently no-ops `update` — refreshed tokens would be
+  lost and re-refreshed every render after expiry.
+
+== Design
+
+. *Routes* (web slice):
+  - `GET /extensions/:id/oauth` — looks up the extension's plugin class,
+    redirects to `klass.redirect_url`. Stores extension id in the session
+    (the provider round-trip must recover which extension initiated).
+  - `GET /plugin_settings/:plugin/redirect` — the fixed callback path.
+    Exchanges `params[:code]` via `klass.fetch_access_token`, writes the
+    token hash into the initiating extension's `data["secrets"][<keyname>]`,
+    redirects back to the extension edit page.
+. *Storage*: `extension.data["secrets"]` (jsonb). Plaintext at rest — same
+  trust model as extension headers/API keys already stored there. A future
+  upgrade can move to a pgcrypto column.
+. *Setting shim*: accept an `on_update:` callback in `Plugins.render`;
+  `Setting#update(encrypted_settings:)` invokes it so the native renderer
+  can persist refreshed tokens back onto the extension row.
+. *Gems*: `signet`, `google-apis-calendar_v3`, `google-apis-analyticsdata_v1beta`,
+  the YouTube Analytics API gem; withings needs none but requires
+  reimplementing Core's `OauthService::Withings` (standard token exchange —
+  follow the plugin's call sites).
+. *ENV app credentials*: `PLUGINS_GOOGLE_CLIENT_ID`/`_SECRET`,
+  `PLUGINS_TODOIST_CLIENT_ID`/`_SECRET` (already resolved by the
+  credentials stub) — users supply their own Google Cloud project creds,
+  documented in STATUS.adoc.
+
+== Open questions for upstream
+
+. Is `data["secrets"]` acceptable, or should this wait for an encrypted
+  column type in Terminus?
+. Session-vs-state-param for recovering the initiating extension
+  (state param is the OAuth-correct answer; Signet supports `state`).

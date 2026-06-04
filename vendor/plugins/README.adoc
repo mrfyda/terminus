@@ -1,0 +1,37 @@
+= Native Plugins
+
+The `upstream` directory is a git submodule of
+https://github.com/usetrmnl/plugins[usetrmnl/plugins], pinned by SHA. The
+plugin code runs verbatim — never edit files under `upstream/` — so screens
+render identically to TRMNL's hosted Core application. A submodule reference
+(rather than vendored copies) also avoids redistributing the upstream code,
+which carries no license file yet (its issue #9 indicates MIT is intended).
+
+Clone with `--recurse-submodules`, or run `git submodule update --init`.
+
+The `support` directory is Terminus-specific: it recreates the minimal Core
+API surface the plugins expect (`Plugins::Base` with `fetch`/`post` HTTP
+helpers, plugin settings, the user's time zone) plus an ERB renderer with the
+Rails helpers used by views (`render`, `t`, `l`, number helpers,
+`instance_name`, `Rails.application.credentials.*` backed by ENV). Where
+upstream files can't run as-is (Ruby 4.0 syntax, missing helper files), the
+loader applies load-time transforms — the upstream bytes stay untouched.
+`weather` has no upstream Ruby at all; its locals provider lives in
+`support/weather_plugin.rb` (keyless Open-Meteo).
+
+== Syncing upstream
+
+[source,bash]
+----
+git -C vendor/plugins/upstream pull origin master
+git add vendor/plugins/upstream && git commit
+----
+
+Then re-run the smoke suites (`tmp/smoke-*.rb`) and add any new translation
+keys the views use to `support/locales/en.yml` (Core's locale files are not
+open source; missing keys fall back to a humanized form of the key).
+
+== Status
+
+See `STATUS.adoc` for the per-plugin support matrix and `OAUTH_DESIGN.adoc`
+for the OAuth flow notes.

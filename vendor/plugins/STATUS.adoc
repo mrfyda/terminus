@@ -1,0 +1,101 @@
+= Native Plugin Support Matrix
+
+What each vendored plugin needs to run under Terminus. Tiers build on each
+other; every tier assumes the `support/` shims.
+
+== Tier 0 — working now
+
+[options="header"]
+|===
+| Plugin | Auth | Notes
+| days_left_until | none | Pure date math. Verified end to end (screen PNG).
+| hacker_news     | none | Public Firebase API via HTTParty. Verified render.
+| weather         | none | Core never published its Ruby; reimplemented in
+                          `support/weather_plugin.rb` against keyless Open-Meteo.
+                          All four layouts verified live. Settings: `lat`/`lng`,
+                          `units` (metric/imperial).
+|===
+
+== Tier 1 — need shared shim additions only
+
+Unlocked by: `Base#fetch`/`Base#post` (Core's HTTP helpers, HTTParty-backed),
+view helpers (`l`, `number_with_delimiter`, `number_to_currency`, `pluralize`),
+real i18n (date formats + plugin keys), ENV-backed credentials stub.
+
+[options="header"]
+|===
+| Plugin | Auth | Extra needs
+| mondrian        | none           | Pure generative layout.
+| route_planner   | none           | Static/local logic.
+| lunar_calendar  | none           | `l`/`t` with `locale:`, moon-phase locale keys.
+| screenshot      | none           | `addressable` gem; `nokogiri` (already transitive).
+| ics_calendar    | URL (user)     | `icalendar` gem, `Base#fetch`.
+| chatgpt         | API key (user) | `Base#post`.
+| lunch_money     | API key (user) | `Base#fetch`.
+| email_meter     | token (user)   | `Base#fetch`.
+| eight_sleep     | email+password (user) | `Base#fetch`/`#post`; no OAuth despite appearances.
+| parcel          | API key (user) | `l` helper, parcel locale keys.
+| stock_price     | server keys    | ENV: `marketdata_app`, `currency_api`.
+| github_commit_graph | server key | ENV: GitHub token; `Base#post` (GraphQL).
+| tempest_weather_station | server key + user station | ENV: Tempest key; `I18n.l`, `user.locale`, `plugin_setting.previous_refresh_at`, weather icon assets.
+|===
+
+== Tier 1.5 — pasted-token fast path (no OAuth flow built)
+
+[options="header"]
+|===
+| Plugin | Status
+| notion  | *Built.* `APIClients::Notion` reimplemented in `support/api_clients.rb`
+           (api.notion.com/v1). Renders its error state cleanly without a token.
+           Settings: `notion.access_token` (nested), `display_type`,
+           `notion_database_id` / `notion_page_id` (format `id::name`).
+| shopify | *Built.* `shopify_api` gem + lazy `ShopifyAPI::Context` bootstrap with
+           placeholder app creds (Admin tokens need none). Degrades gracefully on
+           bad creds. Settings: `shop`, `access_token`, `lookback_period`.
+| todoist | *Blocked upstream.* Degrades gracefully, but the vendored views render
+           a `todos` local (old todo_list format) while the plugin returns
+           `tasks` — even a real token would crash the layout. Needs a view
+           re-sync from upstream or a stub view. Also: the legacy REST v2
+           endpoint now returns 410 Gone; only the v1 filter path
+           (`filter_date` + `sort_grouping` + `sort_direction` set) is viable.
+           Settings: `todoist.access_token` (nested).
+|===
+
+All three need a real pasted token to verify their live-data paths.
+
+== Tier 2 — need an OAuth web flow
+
+Requires the one missing piece of infrastructure: a redirect/callback route,
+encrypted token storage on the extension, and per-provider app credentials
+(ENV). The OAuth client logic itself ships in the plugins (Signet).
+
+[options="header"]
+|===
+| Plugin | Gems
+| google_calendar  | `signet`, `google-apis-calendar_v3`
+| google_analytics | `signet`, `google-apis-analyticsdata_v1beta`
+| youtube_analytics| `signet`, Google YouTube Analytics API gem
+| withings         | none extra, but Core's `OauthService::Withings` must be reimplemented
+|===
+
+== Tier 3 — missing Core code, not just plumbing
+
+[options="header"]
+|===
+| Plugin | Gap
+| nano_banana_dashboard | Needs `user.merged_plugin_locals` (cross-plugin data merge), Gemini API, ImageMagick post-processing. Deepest Core coupling.
+|===
+
+NOTE: `weather` graduated from this tier — see Tier 0; its locals provider
+was reimplemented against Open-Meteo since Core never published the original.
+
+== Shared shim work queue
+
+. `Base#fetch(url, headers:, timeout:, should_retry:)` / `Base#post(url, body:, headers:)` returning an HTTParty response (`.body`, `.parsed_response`).
+. View helpers on the ERB context: `l`, `number_with_delimiter`, `number_to_currency`, `pluralize`.
+. Replace hand-rolled `t` with the `i18n` gem (already a Terminus dependency): date formats (`:short`), `locale:` kwarg, per-plugin keys (lunar phases, parcel statuses, weather).
+. Credentials stub upgrade: support `credentials.plugins[:google][:client_id]`, `credentials.plugins.weather.tempest_api_key`, `credentials.dig(...)`, `credentials.base_url`, `credentials.plugin_asset_url` — all ENV-backed (`PLUGINS_GOOGLE_CLIENT_ID`, ...).
+. `Setting` shim: `previous_refresh_at`, `plugin_setting` (singular) alias. `User` shim: `locale`.
+. Gemfile: `icalendar`, `addressable`, `unicode-emoji`, `shopify_api`, `signet` + Google API gems (Tier 2).
+. `calendar/` holds two plugins (`google_calendar`, `ics_calendar`) plus a shared helper — the loader needs a dir→plugin map for it.
+|===
