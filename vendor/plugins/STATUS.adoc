@@ -14,7 +14,21 @@ other; every tier assumes the `support/` shims.
                           `support/weather_plugin.rb` against keyless Open-Meteo.
                           All four layouts verified live. Settings: `lat`/`lng`,
                           `units` (metric/imperial).
+| route_planner   | API key (user) | Upstream ships only a hardcoded stub (and
+                          it doesn't parse on Ruby 4.0). Reimplemented in
+                          `support/route_planner_plugin.rb` against
+                          OpenRouteService — geocode + directions with
+                          alternatives. Settings: `api_key`, `origin`,
+                          `destination`, `mode`. No key → graceful failure
+                          (no more fake routes).
 |===
+
+== Configuration UI
+
+All plugins with a schema in `support/registry.rb` (13 so far) are
+configurable from the extension form: pick *Native* kind, choose the plugin
+and layout, fill in the settings fields. Plugins without a schema fall back to
+the raw `data` JSON editor.
 
 == Tier 1 — need shared shim additions only
 
@@ -26,7 +40,6 @@ real i18n (date formats + plugin keys), ENV-backed credentials stub.
 |===
 | Plugin | Auth | Extra needs
 | mondrian        | none           | Pure generative layout.
-| route_planner   | none           | Static/local logic.
 | lunar_calendar  | none           | `l`/`t` with `locale:`, moon-phase locale keys.
 | screenshot      | none           | `addressable` gem; `nokogiri` (already transitive).
 | ics_calendar    | URL (user)     | `icalendar` gem, `Base#fetch`.

@@ -5,6 +5,7 @@ require_relative "erb_view"
 require_relative "ics_helpers"
 require_relative "registry"
 require_relative "weather_plugin"
+require_relative "route_planner_plugin"
 
 # Entry point for rendering vendored TRMNL native plugins.
 module Plugins
@@ -27,10 +28,11 @@ module Plugins
   PLUGIN_DIR_MAP = {
     "ics_calendar"    => ["calendar", "calendar/ics_calendar.rb", "OutlookCalendar"],
     "google_calendar" => ["calendar", "calendar/google_calendar.rb", nil],
-    "route_planner"   => ["route_planner", "route_planner/route_planner.rb", "Routes"],
-    # Weather: Ruby class lives in support/weather_plugin.rb (already required),
-    # views live in lib/weather/views/ as normal.
-    "weather"         => ["weather", nil, nil]
+    # Weather and route_planner: upstream ships no usable Ruby (views only /
+    # a hardcoded stub), so the class lives in support/ and only the views
+    # come from lib/.
+    "weather"         => ["weather", nil, nil],
+    "route_planner"   => ["route_planner", nil, "RoutePlanner"]
   }.freeze
 
   # Files with Ruby-4.0-incompatible syntax in the verbatim-vendored lib tree.
@@ -58,26 +60,6 @@ module Plugins
           .gsub(/^\s*require_relative ['"]ics_event_helper['"]\n/, "")
         # Prepend a forward-declaration for Calendar::Ics so the class include works.
         "module Calendar; module Ics; end; end\n#{cleaned}"
-      },
-
-    # route_planner.rb uses `def foo = value` (endless) followed by `end` on
-    # the next line.  In Ruby 3.x the `end` closed the method; Ruby 4.0
-    # rejects it.  Convert to the classic `def foo; value; end` form so the
-    # `end` remains valid as the method terminator.
-    File.join(LIB, "route_planner", "route_planner.rb") =>
-      ->(src) {
-        # Replace `def name = expr\n<indent>end` with `def name\n  expr\n<indent>end`
-        patched = src.gsub(/^( *)def (\w+) = (.+?)\n( *end)/) do
-          indent = $1
-          name   = $2
-          expr   = $3.rstrip
-          closer = $4
-          "#{indent}def #{name}\n#{indent}  #{expr}\n#{closer}"
-        end
-        # The original file is missing a closing `end` for `class Routes`;
-        # in Ruby 3.x one of the orphan ends served double duty.
-        # Insert the class-close before the final module-close `end`.
-        patched.sub(/\nend\z/, "\n  end\nend")
       }
   }.freeze
 
