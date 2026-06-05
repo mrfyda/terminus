@@ -6,7 +6,7 @@ RSpec.describe "/api/firmware", :db do
   include_context "with JWT"
 
   let(:firmware) { Factory[:firmware, :with_attachment, **attributes] }
-  let(:uri) { "https://trmnl-fw.s3.us-east-2.amazonaws.com/FW1.7.0.bin" }
+  let(:uri) { "https://trmnl-fw.s3.us-east-2.amazonaws.com/trmnl_og/FW1.8.5.bin" }
 
   let :attributes do
     {
