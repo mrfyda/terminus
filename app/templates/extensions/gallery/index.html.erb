@@ -23,7 +23,33 @@
     <p>You can fuzzy search by recipe label using partial or full label.</p>
   <% end %>
 
+  <% if show_native && native_catalog.any? %>
+    <h2 class="label">Native Plugins</h2>
+
+    <p>TRMNL native plugins that run on this server. Add one, then configure its settings.</p>
+
+    <ul class="bit-gallery">
+      <% native_catalog.sort_by { |_, meta| meta[:label] }.each do |name, meta| %>
+        <li id="native-<%= name %>" class="bit-card">
+          <h2 class="label"><%= meta[:label] %></h2>
+
+          <div class="actions">
+            <%= form_for routes.path(:extensions_gallery_native_create) do |form| %>
+              <%= form.hidden_field :plugin, value: name %>
+
+              <%= form.submit class: "action bit-button" do %>
+                <%= image_tag "icons/plus.svg", alt: "Add", class: :icon, width: 25, height: 25 %>
+              <% end %>
+            <% end %>
+          </div>
+        </li>
+      <% end %>
+    </ul>
+  <% end %>
+
   <% if recipe.data.any? %>
+    <h2 class="label">TRMNL Recipes</h2>
+
     <p class="bit-text-center">⚠️ Import support is experimental and might require manual adjustment on your part to make the imported extension work. ⚠️</p>
 
     <ul class="bit-gallery">
