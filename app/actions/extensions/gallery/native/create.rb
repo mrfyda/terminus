@@ -12,6 +12,7 @@ module Terminus
           # edit page to configure it (lat/lng, API keys, and so on).
           class Create < Action
             include Deps[
+              "aspects.jobs.schedule",
               repository: "repositories.extension",
               model_repository: "repositories.model"
             ]
@@ -28,6 +29,7 @@ module Terminus
               return reject parameters[:plugin], response unless meta
 
               extension = create parameters[:plugin], meta
+              schedule.upsert(*extension.to_schedule)
               response.flash[:notice] = notice extension
               response.redirect_to routes.path(:extension_edit, id: extension.id)
             end

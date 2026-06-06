@@ -32,7 +32,7 @@ module Terminus
             content = ::Plugins.render(
               name: plugin,
               layout: data.fetch("layout", "full"),
-              settings: extension.liquid_attributes["values"],
+              settings: Hash(data["values"]),
               label: extension.label,
               created_at: extension.created_at,
               tz: data["tz"],

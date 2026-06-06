@@ -10,8 +10,8 @@ module Terminus
       using Refinements::Array
 
       def css_classes
-        size = css.dig "classes", "size"
-        density = css.dig "classes", "density"
+        size = Hash(css).dig "classes", "size"
+        density = Hash(css).dig "classes", "density"
 
         %W[
           screen
@@ -24,7 +24,7 @@ module Terminus
       end
 
       def css_variables
-        css.fetch("variables", Core::EMPTY_ARRAY)
+        Hash(css).fetch("variables", Core::EMPTY_ARRAY)
            .map { |(key, value)| "#{key}: #{value};" }
       end
 
