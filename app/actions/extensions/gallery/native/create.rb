@@ -16,6 +16,7 @@ module Terminus
               repository: "repositories.extension",
               model_repository: "repositories.model"
             ]
+            include Initable[job: Jobs::Batches::Extension]
 
             params { required(:plugin).filled :string }
 
@@ -30,6 +31,7 @@ module Terminus
 
               extension = create parameters[:plugin], meta
               schedule.upsert(*extension.to_schedule)
+              job.perform_async extension.id
               response.flash[:notice] = notice extension
               response.redirect_to routes.path(:extension_edit, id: extension.id)
             end
