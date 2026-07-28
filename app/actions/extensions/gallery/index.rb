@@ -52,7 +52,7 @@ module Terminus
             if htmx.request(**request.env).request?
               htmx.response! response.headers,
                              push_url: routes.path(:extensions_gallery, query:, page:)
-              response.render view, recipe:, query:, page:, layout: false
+              response.render view, recipe:, query:, page:, layout: false, show_native: false
             else
               response.render view, recipe:, query:, page:
             end

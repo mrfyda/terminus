@@ -1,6 +1,24 @@
+<%# Native plugin state seeds from the extension's data blob so editing an
+    existing native extension repopulates the pickers and value fields. %>
+<% native_data = extension && extension.respond_to?(:data) ? Hash(extension.data) : {} %>
+<% native_values = native_data["values"] || {} %>
+
+<%# One Alpine root for the whole form: the data editor (a separate fieldset
+    below) must also read `kind` to yield ownership of extension[data] to the
+    native section. Nested x-data scopes inherit these. %>
+<div x-data="{
+       kind: '<%= field_for :kind, fields, extension %>',
+       npPlugin: '<%= native_data["plugin"] %>',
+       npLayout: '<%= native_data["layout"].to_s.empty? ? "full" : native_data["layout"] %>',
+       npValues: <%= native_values.to_json %>,
+       npCatalog: <%= native_catalog.to_json %>,
+       npData() {
+         return JSON.stringify({plugin: this.npPlugin, layout: this.npLayout, values: this.npValues})
+       }
+     }">
 <fieldset class="row">
   <fieldset class="column">
-    <fieldset class="column" x-data="{kind: '<%= field_for :kind, fields, extension %>'}">
+    <fieldset class="column">
       <legend class="legend">Settings</legend>
 
       <%= scope(:form_field, key: :label, errors:).render do %>
@@ -91,7 +109,8 @@
                    items: [
                      %w[Image image],
                      %w[Poll poll],
-                     %w[Static static]
+                     %w[Static static],
+                     %w[Native native]
                    ],
                    name: "extension[kind]",
                    model: "kind" %>
@@ -107,6 +126,78 @@
         <p class="help" x-show="kind === 'static'">
           Render local data. Use the static body field, below, to supply JSON data.
         </p>
+
+        <p class="help" x-show="kind === 'native'">
+          Render a TRMNL native plugin. Pick the plugin and layout, then fill in
+          its settings below.
+        </p>
+      </div>
+
+      <div class="bit-toggle-field" x-show="kind === 'native'">
+        <%= scope(:form_field, key: :native_plugin, errors:).render do %>
+          <label class="key" for="extension_native_plugin">Plugin</label>
+
+          <select id="extension_native_plugin" class="value" x-model="npPlugin">
+            <option value="">Select a plugin…</option>
+            <% native_catalog.sort_by { |_, meta| meta[:label] }.each do |name, meta| %>
+              <%= tag.option meta[:label], value: name %>
+            <% end %>
+          </select>
+        <% end %>
+
+        <%= scope(:form_field, key: :native_layout, errors:).render do %>
+          <label class="key" for="extension_native_layout">Layout</label>
+
+          <select id="extension_native_layout" class="value" x-model="npLayout">
+            <% native_layouts.each do |layout| %>
+              <%= tag.option layout.split("_").map(&:capitalize).join(" "), value: layout %>
+            <% end %>
+          </select>
+        <% end %>
+
+        <%# Per-plugin settings, rendered from the registry for the chosen
+            plugin. Inputs write into npValues[keyname] (no x-model, since the
+            key is dynamic inside x-for). %>
+        <template x-for="field in (npCatalog[npPlugin]?.fields || [])" :key="field.keyname">
+          <div class="bit-form-field">
+            <label class="key" :for="'np_' + field.keyname" x-text="field.name"></label>
+
+            <template x-if="field.field_type === 'select'">
+              <select class="value"
+                      :id="'np_' + field.keyname"
+                      :value="npValues[field.keyname] ?? field.default"
+                      @change="npValues[field.keyname] = $event.target.value">
+                <template x-for="opt in field.options" :key="opt[1]">
+                  <option :value="opt[1]" x-text="opt[0]"
+                          :selected="(npValues[field.keyname] ?? field.default) === opt[1]"></option>
+                </template>
+              </select>
+            </template>
+
+            <template x-if="field.field_type === 'text'">
+              <textarea class="value"
+                        :id="'np_' + field.keyname"
+                        @input="npValues[field.keyname] = $event.target.value"
+                        x-text="npValues[field.keyname] ?? field.default"></textarea>
+            </template>
+
+            <template x-if="['string', 'password', 'number'].includes(field.field_type)">
+              <input class="value"
+                     :type="field.field_type === 'password' ? 'password' : (field.field_type === 'number' ? 'number' : 'text')"
+                     :id="'np_' + field.keyname"
+                     :value="npValues[field.keyname] ?? field.default"
+                     @input="npValues[field.keyname] = $event.target.value"
+                     autocomplete="off">
+            </template>
+          </div>
+        </template>
+
+        <%# Single source of truth for extension[data] when native: serialized
+            on submit, disabled otherwise so it doesn't fight the raw editor. %>
+        <input type="hidden"
+               name="extension[data]"
+               x-bind:disabled="kind !== 'native'"
+               x-bind:value="npData()">
       </div>
 
       <div x-show="kind === 'image' || kind === 'poll'">
@@ -392,11 +483,14 @@
   <% end %>
 
   <%= scope(:form_field, key: :data, errors:, alpine: {show: "input === 'data'"}).render do %>
+    <%# Yields ownership of extension[data] to the native section when the
+        kind is native, so the two inputs never both submit. %>
     <%= form.text_area :data,
                        field_for(:formatted_data, fields, extension),
                        id: :extension_data,
                        class: "bit-editor",
                        autocomplete: :off,
+                       "x-bind:disabled" => "kind === 'native'",
                        data: {language: :json} %>
   <% end %>
 
@@ -409,6 +503,8 @@
                        data: {language: :json} %>
   <% end %>
 </fieldset>
+
+</div><%# /x-data form root %>
 
 <%= render "extensions/shared/popovers/all" %>
 

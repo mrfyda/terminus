@@ -85,7 +85,8 @@ CREATE TYPE public.extension_kind_enum AS ENUM (
     'poll',
     'secure',
     'static',
-    'webhook'
+    'webhook',
+    'native'
 );
 
 
@@ -1797,6 +1798,7 @@ INSERT INTO schema_migrations (filename) VALUES
 ('20260512110409_rename_extension_body_column.rb'),
 ('20260601143521_add_device_columns.rb'),
 ('20260602112926_add_device_profile_and_compatibility_columns.rb'),
+('20260603100000_add_native_extension_kind.rb'),
 ('20260608161124_add_device_wifi_band_column.rb'),
 ('20260609142235_add_screen_device_id_and_kind_columns.rb'),
 ('20260610103052_remove_device_api_key_and_friendly_id_columns.rb'),

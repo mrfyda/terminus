@@ -1,0 +1,60 @@
+# Translations for vendored plugin views. Core's locale files are not open
+# source, so keys are recreated here as plugins are vendored. Missing keys
+# fall back to a humanized form of the key's last segment.
+en:
+  renders:
+    days_left_year:
+      days_passed: Days passed
+      days_left: Days left
+
+    lunar_calendar:
+      title: Lunar Calendar
+      current_phase: Current Phase
+      illumination: Illumination
+      age: Age
+      next_full_moon: Next Full Moon
+      next_new_moon: Next New Moon
+      next_phase: Next Phase
+      next_phase_short: Next
+      moon_phases:
+        new_moon: New Moon
+        waxing_crescent: Waxing Crescent
+        first_quarter: First Quarter
+        waxing_gibbous: Waxing Gibbous
+        full_moon: Full Moon
+        waning_gibbous: Waning Gibbous
+        third_quarter: Third Quarter
+        waning_crescent: Waning Crescent
+
+    parcel:
+      delivery_by: Delivery by
+      empty: No packages
+      today: today
+      tomorrow: tomorrow
+      status:
+        delivered: Delivered
+        frozen: Frozen
+        in_transit: In Transit
+        expecting_pickup: Expecting Pickup
+        out_for_delivery: Out for Delivery
+        not_found: Not Found
+        failed_delivery_attempt: Failed Delivery Attempt
+        delivery_exception: Delivery Exception
+        information_received: Information Received
+        unknown: Unknown
+      errors:
+        api: API error
+        http: "HTTP error %{code}"
+        internal: Internal error
+
+    weather:
+      title: Weather
+      feels_like: Feels like
+      high: High
+      low: Low
+      humidity: Humidity
+      right_now: Right now
+      temperature: Temperature
+      today: Today
+      tomorrow: Tomorrow
+      uv: UV

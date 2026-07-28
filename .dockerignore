@@ -1,7 +1,6 @@
 # Bin
-/bin
-!/bin/console
-!/bin/pollers
+# NOTE: negation patterns (!/bin/console) trigger "changes out of order" in
+# Apple container's builder shim, so bin/ is included wholesale for local dev.
 
 # Bundler
 /.bundle
