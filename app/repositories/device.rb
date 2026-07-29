@@ -19,6 +19,8 @@ module Terminus
 
       def find_by(**) = with_associations.where(**).one
 
+      def used_model_ids = device.exclude(model_id: nil).distinct.select_map(:model_id)
+
       def mirror_playlist ids, playlist_id
         device.where(Sequel[playlist_id:] | Sequel[id: ids])
               .update(playlist_id: Sequel.case({{id: ids} => playlist_id}, nil))

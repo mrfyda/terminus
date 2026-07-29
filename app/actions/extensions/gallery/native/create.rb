@@ -12,7 +12,7 @@ module Terminus
             include Deps[
               "aspects.jobs.schedule",
               repository: "repositories.extension",
-              model_repository: "repositories.model"
+              device_repository: "repositories.device"
             ]
             include Initable[job: Jobs::Batches::Extension]
 
@@ -61,10 +61,9 @@ module Terminus
               "#{base}-#{suffix}"
             end
 
-            # Target every known model so a screen is built regardless of
-            # which model(s) the user's device(s) actually are, rather than
-            # guessing a single hardcoded model name.
-            def model_ids = model_repository.all.map(&:id)
+            # Only build screens for models the user's devices actually use,
+            # rather than every known model.
+            def model_ids = device_repository.used_model_ids
 
             def notice extension
               path = routes.path :extension_edit, id: extension.id
