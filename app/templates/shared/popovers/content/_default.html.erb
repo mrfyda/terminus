@@ -10,7 +10,7 @@
     <span class="screen_reader">Close</span>
   <% end %>
 
-  <h1 class="label"><%= label %></h1>
+  <%= tag.h1 label, class: :label if label %>
 
   <%= yield %>
 <% end %>

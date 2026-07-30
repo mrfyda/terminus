@@ -40,10 +40,10 @@
                              model_id: model.id,
                              device_id: %>
 
-        <div class="bit-frame">
-          <%= tag.iframe src: uri,
-                         style: "width: #{model.width}px; height: #{model.height}px;" %>
-        </div>
+        <%= tag.div class: "bit-frame",
+                    style: "--model-width: #{model.width}; --model-height: #{model.height}" do %>
+          <%= tag.iframe src: uri %>
+        <% end %>
       <% end %>
 
       <%= form_for :extension,

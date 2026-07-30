@@ -1,10 +1,44 @@
+/* Renders an iframe at a model's true pixel dimensions, then scales it down to
+ * fit a bounded box. The iframe must lay out at the real resolution -- a TRMNL
+ * design is built for an exact viewport, so resizing the iframe (rather than
+ * scaling it) previews the wrong layout: without this, a portrait 1072x1448
+ * model got clamped to 1066x640 by the media rule in defaults.css and the
+ * popover's max-width/max-height, previewing a portrait device as landscape.
+ *
+ * --model-width/--model-height are set inline from the model. All the custom
+ * properties here are unitless so --scale stays a plain ratio. */
 .bit-frame {
-  aspect-ratio: 5 / 3;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  --frame-max-width: 640;
+  --frame-max-height: 560;
+  --scale: min(
+    calc(var(--frame-max-width) / var(--model-width)),
+    calc(var(--frame-max-height) / var(--model-height))
+  );
+
+  block-size: calc(var(--model-height) * var(--scale) * 1px);
+  inline-size: calc(var(--model-width) * var(--scale) * 1px);
+  overflow: hidden;
 
   iframe {
+    block-size: calc(var(--model-height) * 1px);
     border: none;
+    display: block;
+    inline-size: calc(var(--model-width) * 1px);
+
+    /* Scales from the corner so the result lands exactly on the frame box.
+     * Centering the oversized iframe first would be fragile -- Chrome clamps
+     * an overflowing item's centering back to the start edge. */
+    transform: scale(var(--scale));
+    transform-origin: top left;
+
+    /* Overrides the global media clamp in defaults.css, which would otherwise
+     * shrink the iframe instead of letting the transform scale it. */
+    max-block-size: none;
+    max-inline-size: none;
+  }
+
+  @media only screen and (max-width: 800px) {
+    --frame-max-width: 300;
+    --frame-max-height: 400;
   }
 }
