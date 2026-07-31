@@ -1469,7 +1469,14 @@ CREATE INDEX playlist_mode_index ON public.playlist USING btree (mode);
 -- Name: screen_device_id_kind_index; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX screen_device_id_kind_index ON public.screen USING btree (device_id, kind) WHERE (device_id IS NOT NULL);
+CREATE UNIQUE INDEX screen_device_id_kind_index ON public.screen USING btree (device_id, kind) WHERE ((device_id IS NOT NULL) AND (kind <> 'general'::public.screen_kind_enum));
+
+
+--
+-- Name: screen_device_id_name_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX screen_device_id_name_index ON public.screen USING btree (device_id, name) WHERE (device_id IS NOT NULL);
 
 
 --
@@ -1483,7 +1490,7 @@ CREATE INDEX screen_image_data_index ON public.screen USING gin (image_data);
 -- Name: screen_model_id_name_index; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX screen_model_id_name_index ON public.screen USING btree (model_id, name);
+CREATE UNIQUE INDEX screen_model_id_name_index ON public.screen USING btree (model_id, name) WHERE (device_id IS NULL);
 
 
 --
@@ -1807,4 +1814,5 @@ INSERT INTO schema_migrations (filename) VALUES
 ('20260630091508_add_device_log_level_column.rb'),
 ('20260714090149_add_device_api_key_column.rb'),
 ('20260721160734_add_device_command_column.rb'),
-('20260721160742_rename_device_log_function_columan_as_command.rb');
+('20260721160742_rename_device_log_function_columan_as_command.rb'),
+('20260731201500_alter_screen_unique_indexes.rb');

@@ -18,6 +18,15 @@ RSpec.describe Terminus::Repositories::Screen, :db do
     ]
   end
 
+  def screen_for device, name
+    Factory[:screen,
+            :with_image,
+            name:,
+            kind: "general",
+            model_id: device.model_id,
+            device_id: device.id]
+  end
+
   def mold_for device, name, label
     Terminus::Aspects::Screens::Mold[
       model_id: device.model_id,
@@ -212,6 +221,24 @@ RSpec.describe Terminus::Repositories::Screen, :db do
       record = repository.upsert_with_image path, mold, Factory.structs[:screen, :with_image]
 
       expect(record).to have_attributes(name: "extension-second", device_id: device.id)
+    end
+
+    # Two devices sharing a model resolve to the same (model_id, name), so keying
+    # the lookup on that pair matched the other device's row and updated it in
+    # place, moving the first device's screen onto the second.
+    it "keeps a separate record per device when devices share a model" do
+      first = Factory[:device, model_id: model.id, mac_address: "A1:B2:C3:D4:E5:01"]
+      second = Factory[:device, model_id: model.id, mac_address: "A1:B2:C3:D4:E5:02"]
+      screen_for first, "extension-shared"
+
+      repository.upsert_with_image SPEC_ROOT.join("support/fixtures/test.bmp"),
+                                   mold_for(second, "extension-shared", "Extension Shared"),
+                                   Factory.structs[:screen, :with_image]
+
+      expect(repository.where(name: "extension-shared").map(&:device_id)).to contain_exactly(
+        first.id,
+        second.id
+      )
     end
   end
 
