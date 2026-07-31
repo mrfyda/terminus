@@ -41,7 +41,7 @@ module Terminus
       end
 
       def upsert_with_image path, mold, struct
-        record = find_by name: mold.name, model_id: mold.model_id
+        record = find_existing mold
         record ? update_with_image(path, mold, record) : create_with_image(path, mold, struct)
       end
 
@@ -52,6 +52,20 @@ module Terminus
       end
 
       private
+
+      # Mirrors the unique indexes on screen so a lookup can't miss the row an
+      # insert would collide with: a device's screens are identified by name,
+      # model scoped screens by model and name. Keying on (model_id, name) alone
+      # ignored device_id entirely, so building a second extension for a device
+      # found nothing, fell through to an insert, and tripped the unique index on
+      # (device_id, kind).
+      def find_existing mold
+        device_id = mold.device_id
+
+        return find_by device_id:, name: mold.name if device_id
+
+        find_by model_id: mold.model_id, name: mold.name
+      end
 
       def with_associations = screen.combine :model
 

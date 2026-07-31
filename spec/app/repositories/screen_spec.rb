@@ -18,6 +18,17 @@ RSpec.describe Terminus::Repositories::Screen, :db do
     ]
   end
 
+  def mold_for device, name, label
+    Terminus::Aspects::Screens::Mold[
+      model_id: device.model_id,
+      device_id: device.id,
+      name:,
+      label:,
+      content: "<p>test</p>",
+      mime_type: "image/bmp"
+    ]
+  end
+
   describe "#all" do
     it "answers all records" do
       screen
@@ -167,6 +178,40 @@ RSpec.describe Terminus::Repositories::Screen, :db do
 
         expect(record).to have_attributes(proof)
       end
+    end
+
+    it "updates existing record when device scoped" do
+      device = Factory[:device, model_id: model.id]
+      existing = Factory[:screen,
+                         :with_image,
+                         name: "test",
+                         model_id: model.id,
+                         device_id: device.id]
+      path = SPEC_ROOT.join "support/fixtures/test.bmp"
+
+      record = repository.upsert_with_image path, mold_for(device, "test", "Test"), existing
+
+      expect(record).to have_attributes(proof.merge(device_id: device.id))
+    end
+
+    # A device may be attached to several extensions, each owning its own screen.
+    # Keying the lookup on (model_id, name) missed the row the device already had
+    # and fell through to an insert, tripping the unique index on (device_id, kind)
+    # since every extension screen defaults to the "general" kind.
+    it "creates a separate record per extension for the same device" do
+      device = Factory[:device, model_id: model.id]
+      Factory[:screen,
+              :with_image,
+              name: "extension-first",
+              kind: "general",
+              model_id: model.id,
+              device_id: device.id]
+      mold = mold_for device, "extension-second", "Extension Second"
+      path = SPEC_ROOT.join "support/fixtures/test.bmp"
+
+      record = repository.upsert_with_image path, mold, Factory.structs[:screen, :with_image]
+
+      expect(record).to have_attributes(name: "extension-second", device_id: device.id)
     end
   end
 
