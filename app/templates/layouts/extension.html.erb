@@ -15,11 +15,22 @@
                  href: "https://trmnl.com/css/latest/plugins.css" %>
 
     <style type="text/css">
+      /* The screenshot viewport is exactly the model's pixel dimensions, so the
+       * design has to be centered against the full viewport. Since the main
+       * axis is vertical, justify-content needs a body that is as tall as the
+       * viewport -- body defaults to content height, which left it with no free
+       * space to distribute and rendered a 460px design flush to the top of a
+       * 758px screen. */
+      :where(html) {
+        block-size: 100%;
+      }
+
       :where(body) {
         align-items: center;
         display: flex;
         flex-direction: column;
         justify-content: center;
+        min-block-size: 100%;
       }
 
       .screen {
