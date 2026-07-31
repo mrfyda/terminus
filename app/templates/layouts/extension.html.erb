@@ -20,9 +20,16 @@
        * axis is vertical, justify-content needs a body that is as tall as the
        * viewport -- body defaults to content height, which left it with no free
        * space to distribute and rendered a 460px design flush to the top of a
-       * 758px screen. */
+       * 758px screen.
+       *
+       * Physical properties only. Aspects::Sanitizer runs over this markup
+       * before the screenshot and drops any CSS property outside its allow
+       * list, which covers height and min-height but not min-block-size. Using
+       * the logical properties silently lost the vertical rule while keeping
+       * align-items, which centered horizontally and rendered flush to the
+       * top. */
       :where(html) {
-        block-size: 100%;
+        height: 100%;
       }
 
       :where(body) {
@@ -30,7 +37,7 @@
         display: flex;
         flex-direction: column;
         justify-content: center;
-        min-block-size: 100%;
+        min-height: 100%;
       }
 
       .screen {
