@@ -4,6 +4,10 @@ css:
     - "--screen-h"
     - "--pixel-ratio"
     - "--dither-pixel-ratio"
+    # The design system derives --ui-scale from this on :root, so a model that
+    # sets it to scale itself up had the declaration dropped here and silently
+    # fell back to the 800x480 default.
+    - "--device-ui-scale"
     - "--ui-scale"
     - "--gap-scale"
 elements:
